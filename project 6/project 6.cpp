@@ -1,67 +1,68 @@
- #include <iostream>
+#include <iostream>
+#include <string>
 #include <limits>
-#include <cctype>
 using namespace std;
-// Function declarations
-double getPositiveInput(const string& prompt);
-double calculatePerimeter(double length, double width);
-double calculateArea(double length, double width);
-bool askToContinue();
+
+// Function prototypes
+int getAccidents(const string& region);
+string findLowest(int north, int south, int east, int west, int central);
+
 int main() {
-    bool continueProcessing = true;
+    cout << "Enter the number of automobile accidents reported last year for each region.\n";
 
-    while (continueProcessing) {
-        double length = getPositiveInput("Enter the length of the rectangle: ");
-        double width = getPositiveInput("Enter the width of the rectangle: ");
+    int north = getAccidents("North");
+    int south = getAccidents("South");
+    int east = getAccidents("East");
+    int west = getAccidents("West");
+    int central = getAccidents("Central");
 
-        double perimeter = calculatePerimeter(length, width);
-        double area = calculateArea(length, width);
+    string lowestRegion = findLowest(north, south, east, west, central);
 
-        cout << "Perimeter: " << perimeter << endl;
-        cout << "Area: " << area << endl;
+    cout << "\nThe region with the fewest accidents is: " << lowestRegion << endl;
 
-        continueProcessing = askToContinue();
-    }
-
-    cout << "Thank you for using the Rectangle Calculator!" << endl;
     return 0;
 }
 
-// Function to get positive input with validation
-double getPositiveInput(const string& prompt) {
-    double value;
+// Function to get accident input with validation
+int getAccidents(const string& region) {
+    int accidents;
 
     while (true) {
-        cout << prompt;
-        cin >> value;
+        cout << "Enter accidents for " << region << " region: ";
+        cin >> accidents;
 
-        if (cin.fail() || value < 0) {
-            cout << "Invalid input. Please enter a non-negative number." << endl;
-            cin.clear(); // Clear error flag
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+        if (cin.fail() || accidents < 0) {
+            cout << "Invalid input. Please enter a number 0 or greater." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
         else {
-            return value;
+            return accidents;
         }
     }
 }
 
-// Function to calculate perimeter
-double calculatePerimeter(double length, double width) {
-    return 2 * (length + width);
-}
+// Function to find the region with the lowest number of accidents
+string findLowest(int north, int south, int east, int west, int central) {
+    int min = north;
+    string region = "North";
 
-// Function to calculate area
-double calculateArea(double length, double width) {
-    return length * width;
-}
+    if (south < min) {
+        min = south;
+        region = "South";
+    }
+    if (east < min) {
+        min = east;
+        region = "East";
+    }
+    if (west < min) {
+        min = west;
+        region = "West";
+    }
+    if (central < min) {
+        min = central;
+        region = "Central";
+    }
 
-// Function to ask user if they want to continue
-bool askToContinue() {
-    char response;
-    cout << "Do you want to calculate another rectangle? (Y/N): ";
-    cin >> response;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clean up input buffer
-    return (tolower(response) == 'y');
+    return region;
 }
-
